@@ -270,6 +270,27 @@ struct Home: View {
                                 .font(.system(size: 20))
                                 .foregroundColor(.white)
                         }
+                        .actionSheet(isPresented: $showMenu) {
+                            ActionSheet(
+                                title: Text("Bifrost"),
+                                buttons: [
+                                    .default(Text("关于 Bifrost")) {
+                                        showAboutAlert = true
+                                    },
+                                    .cancel()
+                                ]
+                            )
+                        }
+                        .alert(isPresented: $showAboutAlert) {
+                            Alert(
+                                title: Text(""),
+                                message: Text("当前版本: \((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1.0")"),
+                                dismissButton: .default(
+                                    Text("确定"),
+                                    action: {}
+                                )
+                            )
+                        }
                     }
                 }
                 .toolbarBackground(Color("main"), for: .navigationBar)
@@ -309,27 +330,6 @@ struct Home: View {
                     }
                     .zIndex(100)
                 }
-            }
-            .actionSheet(isPresented: $showMenu) {
-                ActionSheet(
-                    title: Text("Bifrost"),
-                    buttons: [
-                        .default(Text("关于 Bifrost")) {
-                            showAboutAlert = true
-                        },
-                        .cancel()
-                    ]
-                )
-            }
-            .alert(isPresented: $showAboutAlert) {
-                Alert(
-                    title: Text("Bifrost"),
-                    message: Text("当前版本: \((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1.0")"),
-                    dismissButton: .default(
-                        Text("确定"),
-                        action: {}
-                    )
-                )
             }
         }
         .navigationViewStyle(.stack)
