@@ -42,7 +42,13 @@ struct Home: View {
         willSet {
             UserDefaults.standard.set(newValue, forKey: Constants.current_scheme)
 
-            if schemeHistory.firstIndex(of: newValue) == nil {
+            let newUsername = extractUsername(from: newValue)
+
+            if let username = newUsername,
+               let existingIndex = schemeHistory.firstIndex(where: { extractUsername(from: $0) == username }) {
+                // username 相同时，替换已有项
+                schemeHistory[existingIndex] = newValue
+            } else if schemeHistory.firstIndex(of: newValue) == nil {
                 schemeHistory.append(newValue)
             }
         }
@@ -64,6 +70,16 @@ struct Home: View {
         willSet {
             UserDefaults.standard.set(newValue, forKey: Constants.scheme_history)
         }
+    }
+
+
+    /// 从 scheme 字符串中提取 username 部分（@ 之前的内容）
+    func extractUsername(from scheme: String) -> String? {
+        guard let atIndex = scheme.firstIndex(of: "@") else {
+            return nil
+        }
+        let username = String(scheme[scheme.startIndex..<atIndex])
+        return username.isEmpty ? nil : username
     }
 
     func removeScheme(willRemoveScheme: String) {
