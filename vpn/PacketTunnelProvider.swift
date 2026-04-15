@@ -4,9 +4,10 @@
 //
 
 import NetworkExtension
+import Network
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
-    var session: NWUDPSession? = nil
+    var connection: NWConnection? = nil
 
     private func initTunnelSettings(proxyHost: String, proxyPort: Int) -> NEPacketTunnelNetworkSettings {
         let settings: NEPacketTunnelNetworkSettings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
@@ -63,11 +64,10 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         return settings
     }
 
-    func readPackets(connection: NWTCPConnection) {
+    func readPackets(connection: NWConnection) {
         packetFlow.readPackets {(packets, protocols) in
             for packet in packets {
-                connection.write(packet, completionHandler: { (error) in
-                })
+                connection.send(content: packet, completion: .contentProcessed({ _ in }))
             }
 
             self.readPackets(connection: connection)
@@ -85,17 +85,21 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 
         setTunnelNetworkSettings(networkSettings)
 
-        let endpoint = NWHostEndpoint(hostname: proxyHost, port: String(proxyPort))
+        let host = NWEndpoint.Host(proxyHost)
+        let port = NWEndpoint.Port(proxyPort)!
 
-        let connection = createTCPConnection(to: endpoint, enableTLS: false, tlsParameters: nil, delegate: nil)
+        let tcpConnection = NWConnection(host: host, port: port, using: .tcp)
+        self.connection = tcpConnection
+        tcpConnection.start(queue: .main)
 
-        readPackets(connection: connection)
+        readPackets(connection: tcpConnection)
 
         reasserting = false
     }
 
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        session?.cancel()
+        connection?.cancel()
+        connection = nil
         super.stopTunnel(with: reason, completionHandler: completionHandler)
     }
 
