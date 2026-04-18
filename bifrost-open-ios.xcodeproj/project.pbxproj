@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2B7DC2A82F8E731400D0EF43 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39AE46A7BA558F9D0BEAB92D /* NetworkExtension.framework */; };
-		2B7DC2A92F8E731400D0EF43 /* NetworkExtension.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39AE46A7BA558F9D0BEAB92D /* NetworkExtension.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C55661D4E9994D3972A9404C /* vpn.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 69938BDC5D873CFD54B9A4F9 /* vpn.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -32,17 +31,6 @@
 				C55661D4E9994D3972A9404C /* vpn.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2B7DC2AA2F8E731400D0EF43 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				2B7DC2A92F8E731400D0EF43 /* NetworkExtension.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -151,7 +139,6 @@
 				B41B230D088FC5CF56B516C3 /* Sources */,
 				4C36C3FB06F07F51A20145AA /* Frameworks */,
 				FF204875EFEBADE01C0CE190 /* Resources */,
-				2B7DC2AA2F8E731400D0EF43 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
