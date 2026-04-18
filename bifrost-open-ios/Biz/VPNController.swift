@@ -93,7 +93,7 @@ class VPNController {
         providerProtocol.providerConfiguration = ["proxyPort": proxyPort, "proxyHost": proxyHost]
 
         self.vpnManager.isEnabled = true
-        self.vpnManager.localizedDescription = "Bifrost"
+        self.vpnManager.localizedDescription = "Bifrost Proxy"
         self.vpnManager.protocolConfiguration = providerProtocol
 
         self.vpnManager.saveToPreferences(completionHandler: { (error: Error?) in
