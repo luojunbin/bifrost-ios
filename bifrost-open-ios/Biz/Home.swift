@@ -309,8 +309,6 @@ struct Home: View {
                         }
                     }
                 }
-                .toolbarBackground(Color("main"), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
 
                 // TextAlert (隐藏 host)
                 HStack {}
