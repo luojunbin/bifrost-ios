@@ -3,12 +3,12 @@
 //  bifrost-open-ios
 //
 
+import Foundation
 import NetworkExtension
 
-/// NOTE: 此 bundle ID 需要与 Xcode 中 vpn extension target 的 bundle ID 一致
-let TUNNEL_BUNDLE_ID = "luojunbin.bifrost-open-ios.vpn"
-
 class VPNController {
+    private static let tunnelExtensionPointID = "com.apple.networkextension.packet-tunnel"
+
     var vpnManager: NETunnelProviderManager = NETunnelProviderManager()
     var continueConnectConfig = (proxyHost: "", proxyPort: "")
 
@@ -87,8 +87,13 @@ class VPNController {
             return
         }
 
+        guard let providerBundleIdentifier = tunnelBundleIdentifier() else {
+            print("Unable to find packet tunnel provider bundle identifier")
+            return
+        }
+
         let providerProtocol = NETunnelProviderProtocol()
-        providerProtocol.providerBundleIdentifier = TUNNEL_BUNDLE_ID
+        providerProtocol.providerBundleIdentifier = providerBundleIdentifier
         providerProtocol.serverAddress = "\(proxyHost):\(proxyPort)"
         providerProtocol.providerConfiguration = ["proxyPort": proxyPort, "proxyHost": proxyHost]
 
@@ -119,4 +124,27 @@ class VPNController {
     func disconnect() {
         self.vpnManager.connection.stopVPNTunnel()
     }
+    
+    private func tunnelBundleIdentifier() -> String? {
+        if let pluginURL = Bundle.main.builtInPlugInsURL,
+           let pluginURLs = try? FileManager.default.contentsOfDirectory(
+            at: pluginURL,
+            includingPropertiesForKeys: nil
+           ) {
+            for url in pluginURLs where url.pathExtension == "appex" {
+                guard let bundle = Bundle(url: url),
+                      let extensionInfo = bundle.infoDictionary?["NSExtension"] as? [String: Any],
+                      extensionInfo["NSExtensionPointIdentifier"] as? String == Self.tunnelExtensionPointID,
+                      let bundleIdentifier = bundle.bundleIdentifier
+                else {
+                    continue
+                }
+
+                return bundleIdentifier
+            }
+        }
+
+        return nil
+    }
+
 }
